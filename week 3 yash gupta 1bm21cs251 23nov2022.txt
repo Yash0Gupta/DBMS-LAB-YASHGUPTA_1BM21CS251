@@ -1,0 +1,118 @@
+WEEK 3 
+23 NOV 2022
+YASH GUPTA 1BM21CS251 
+BANK ACCOUNT 
+
+
+show databases;
+create database bank1;
+use bank1;
+create table branch(branch_name varchar(25), branch_city varchar(25), assets float);
+alter table branch modify branch_name varchar(25) primary key;
+alter table branch modify assets real;
+desc branch;
+create table bankaccount(accno int primary key, branch_name varchar(25), balance real,
+foreign key (branch_name) references branch(branch_name) on update cascade);
+desc bankaccount;
+
+create table bankCustomer(
+customer_name varchar(20),
+customer_street varchar(20),
+customer_city varchar(15),
+PRIMARY KEY(customer_name)
+);
+
+create table loan(
+loan_no int,
+branch_name varchar(20),
+amount real,
+PRIMARY KEY(loan_no),
+FOREIGN KEY(branch_name) REFERENCES branch(branch_name)
+ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+create table depositer(
+customer_name varchar(20),
+accno int,
+FOREIGN KEY(customer_name)REFERENCES bankCustomer(customer_name)
+ON UPDATE CASCADE ON DELETE CASCADE,
+FOREIGN KEY(accno) REFERENCES bankAccount(accno)
+ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+insert into branch values('sbi_chamrajpet','bangalore',50000);
+insert into branch values('sbi_residencyRoad','bangalore',10000);
+insert into branch values('sbi_shivajiRoad','mumbai',20000);
+insert into branch values('sbi_parlimentRoad','delhi',10000);
+insert into branch values('sbi_jantarmantar','delhi',20000);
+
+select * from branch;
+sbi_chamrajpet	bangalore	50000
+sbi_jantarmantar	delhi		20000
+sbi_parlimentRoad	delhi		10000
+sbi_residencyRoad	bangalore	10000
+sbi_shivajiRoad	mumbai	20000
+
+
+insert into bankAccount values(1,'sbi_chamrajpet',2000);
+insert into bankAccount values(2,'sbi_residencyRoad',5000);
+insert into bankAccount values(3,'sbi_shivajiRoad',6000);
+insert into bankAccount values(4,'sbi_parlimentRoad',9000);
+insert into bankAccount values(5,'sbi_jantarmantar',8000);
+
+select * from bankaccount;
+1	sbi_chamrajpet	2000
+2	sbi_residencyRoad	5000
+3	sbi_shivajiRoad	6000
+4	sbi_parlimentRoad	9000
+5	sbi_jantarmantar	8000
+
+insert into bankCustomer values('avinash','bull_temple_road','bangalore');
+insert into bankCustomer values('dinesh','banerghatta_road','bangalore');
+insert into bankCustomer values('mohan','nationalCollege_road','bangalore');
+insert into bankCustomer values('nikhil','akbar_road','delhi');
+insert into bankCustomer values('ravi','prithviraj_road','delhi');
+
+select * from bankCustomer;
+avinash	bull_temple_road		bangalore
+dinesh	banerghatta_road		bangalore
+mohan		nationalCollege_road	bangalore
+nikhil	akbar_road	 		delhi
+ravi		prithviraj_road	  	delhi
+
+insert into depositer values('avinash', 1);
+insert into depositer values('dinesh', 2);
+insert into depositer values('mohan', 3);
+insert into depositer values('nikhil', 4);
+insert into depositer values('ravi', 5);
+
+select * from depositer;
+avinash	1
+dinesh	2
+mohan		3
+nikhil	4
+ravi		5
+
+
+
+QUERRIES--
+
+select distinct(customer_name) from depositer d, bankaccount b where (d.accno=b.accno and b.branch_name='sbi_residencyRoad') having(count(*)>1);
+dinesh
+
+SELECT DISTINCT(CUSTOMER_NAME) FROM BRANCH B, DEPOSITER D, BANKACCOUNT BA WHERE (D.ACCNO=BA.ACCNO AND BA.BRANCH_NAME=B.BRANCH_NAME AND B.BRANCH_CITY='delhi');
+ravi
+nikhil
+
+delete from bankaccount where branch_name in(select branch_name from branch where branch_city='mumbai');
+select * from bankaccount;
+1	sbi_chamrajpet	2000
+2	sbi_residencyRoad	5000
+4	sbi_parlimentRoad	9000
+5	sbi_jantarmantar	8000
+6	sbi_residencyRoad	5000
+		
+
+		
+		
+		
